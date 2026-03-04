@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import useAchievementStore, {
   ACHIEVEMENTS,
 } from '@/features/Achievements/store/useAchievementStore';
+import { KANJI_BY_JLPT_LEVEL } from '@/features/Achievements/store/kanjiSets';
 import { useStatsStore } from '@/features/Progress';
 import { useClick } from '@/shared/hooks/useAudio';
 import { useShallow } from 'zustand/react/shallow';
@@ -127,6 +128,17 @@ export const useAchievementProgress = () => {
             }
             current = masteredCount;
             target = additional.minAnswers;
+          } else if (contentType === 'kanji' && additional?.jlptLevel) {
+            const kanjiSet = KANJI_BY_JLPT_LEVEL[additional.jlptLevel];
+            relevantEntries = entries.filter(([key]) => kanjiSet.has(key));
+            let masteredCount = 0;
+            for (const [, s] of relevantEntries) {
+              const tot = s.correct + s.incorrect;
+              if (tot > 0 && (s.correct / tot) * 100 >= targetAccuracy)
+                masteredCount++;
+            }
+            current = masteredCount;
+            target = kanjiSet.size;
           } else {
             isPercentage = true;
             current = 0;

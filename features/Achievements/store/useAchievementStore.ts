@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { KANJI_BY_JLPT_LEVEL } from './kanjiSets';
 
 export type AchievementRarity =
   | 'common'
@@ -1382,19 +1383,101 @@ export interface SessionStats {
 }
 
 const BASIC_HIRAGANA = new Set([
-  '\u3042','\u3044','\u3046','\u3048','\u304A','\u304B','\u304D','\u304F','\u3051','\u3053',
-  '\u3055','\u3057','\u3059','\u305B','\u305D','\u305F','\u3061','\u3064','\u3066','\u3068',
-  '\u306A','\u306B','\u306C','\u306D','\u306E','\u306F','\u3072','\u3075','\u3078','\u307B',
-  '\u307E','\u307F','\u3080','\u3081','\u3082','\u3084','\u3086','\u3088','\u3089','\u308A',
-  '\u308B','\u308C','\u308D','\u308F','\u3092','\u3093',
+  '\u3042',
+  '\u3044',
+  '\u3046',
+  '\u3048',
+  '\u304A',
+  '\u304B',
+  '\u304D',
+  '\u304F',
+  '\u3051',
+  '\u3053',
+  '\u3055',
+  '\u3057',
+  '\u3059',
+  '\u305B',
+  '\u305D',
+  '\u305F',
+  '\u3061',
+  '\u3064',
+  '\u3066',
+  '\u3068',
+  '\u306A',
+  '\u306B',
+  '\u306C',
+  '\u306D',
+  '\u306E',
+  '\u306F',
+  '\u3072',
+  '\u3075',
+  '\u3078',
+  '\u307B',
+  '\u307E',
+  '\u307F',
+  '\u3080',
+  '\u3081',
+  '\u3082',
+  '\u3084',
+  '\u3086',
+  '\u3088',
+  '\u3089',
+  '\u308A',
+  '\u308B',
+  '\u308C',
+  '\u308D',
+  '\u308F',
+  '\u3092',
+  '\u3093',
 ]);
 
 const BASIC_KATAKANA = new Set([
-  '\u30A2','\u30A4','\u30A6','\u30A8','\u30AA','\u30AB','\u30AD','\u30AF','\u30B1','\u30B3',
-  '\u30B5','\u30B7','\u30B9','\u30BB','\u30BD','\u30BF','\u30C1','\u30C4','\u30C6','\u30C8',
-  '\u30CA','\u30CB','\u30CC','\u30CD','\u30CE','\u30CF','\u30D2','\u30D5','\u30D8','\u30DB',
-  '\u30DE','\u30DF','\u30E0','\u30E1','\u30E2','\u30E4','\u30E6','\u30E8','\u30E9','\u30EA',
-  '\u30EB','\u30EC','\u30ED','\u30EF','\u30F2','\u30F3',
+  '\u30A2',
+  '\u30A4',
+  '\u30A6',
+  '\u30A8',
+  '\u30AA',
+  '\u30AB',
+  '\u30AD',
+  '\u30AF',
+  '\u30B1',
+  '\u30B3',
+  '\u30B5',
+  '\u30B7',
+  '\u30B9',
+  '\u30BB',
+  '\u30BD',
+  '\u30BF',
+  '\u30C1',
+  '\u30C4',
+  '\u30C6',
+  '\u30C8',
+  '\u30CA',
+  '\u30CB',
+  '\u30CC',
+  '\u30CD',
+  '\u30CE',
+  '\u30CF',
+  '\u30D2',
+  '\u30D5',
+  '\u30D8',
+  '\u30DB',
+  '\u30DE',
+  '\u30DF',
+  '\u30E0',
+  '\u30E1',
+  '\u30E2',
+  '\u30E4',
+  '\u30E6',
+  '\u30E8',
+  '\u30E9',
+  '\u30EA',
+  '\u30EB',
+  '\u30EC',
+  '\u30ED',
+  '\u30EF',
+  '\u30F2',
+  '\u30F3',
 ]);
 
 const isSingleKanji = (value: string) => /^[\u4E00-\u9FFF]$/.test(value);
@@ -1484,7 +1567,11 @@ function checkContentMastery(
     relevantEntries = entries.filter(([key]) => BASIC_KATAKANA.has(key));
     if (relevantEntries.length < BASIC_KATAKANA.size) return false;
   } else if (contentType === 'kanji') {
-    relevantEntries = entries.filter(([key]) => isSingleKanji(key));
+    const jlptLevel = additional?.jlptLevel;
+    if (!jlptLevel) return false;
+    const kanjiSet = KANJI_BY_JLPT_LEVEL[jlptLevel];
+    relevantEntries = entries.filter(([key]) => kanjiSet.has(key));
+    if (relevantEntries.length < kanjiSet.size) return false;
   } else {
     relevantEntries = entries;
   }
@@ -2028,4 +2115,3 @@ const useAchievementStore = create<AchievementState>()(
 );
 
 export default useAchievementStore;
-
