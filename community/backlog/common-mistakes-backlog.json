@@ -413,7 +413,7 @@
     "explanation": "Conditional needs たら/なら etc. (Pattern set 3)",
     "id": 52,
     "issued": false,
-    "completed": false
+    "completed": true
   },
   {
     "wrong": "これは私のです本。",
@@ -421,14 +421,14 @@
     "explanation": "Place の correctly in noun phrase. (Pattern set 3)",
     "id": 53,
     "issued": false,
-    "completed": false
+    "completed": true
   },
   {
     "wrong": "会議は三時からで始まります。",
     "correct": "会議は三時から始まります。",
     "explanation": "Remove unnecessary particle after から. (Pattern set 3)",
     "id": 54,
-    "issued": false,
+    "issued": true,
     "completed": false
   },
   {
