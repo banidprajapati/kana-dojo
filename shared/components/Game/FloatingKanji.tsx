@@ -2,9 +2,10 @@
 
 import { memo } from 'react';
 import { motion } from 'framer-motion';
+import { generateButtonBorderColor } from '@/features/Preferences/data/themes/themes';
 import { cn } from '@/shared/lib/utils';
 
-const useButtonStyle = false;
+const useButtonStyle = true;
 
 interface FloatingKanjiProps {
   char: string;
@@ -39,6 +40,9 @@ const FloatingKanji = memo(
       md: 'text-3xl', // 30px - tablet
       lg: 'text-4xl', // 36px - desktop
     }[size];
+    const buttonBorderColor = useButtonStyle
+      ? generateButtonBorderColor(color)
+      : undefined;
 
     return (
       <motion.button
@@ -63,12 +67,13 @@ const FloatingKanji = memo(
           fontClass,
           'motion-safe:animate-float',
           useButtonStyle &&
-            'h-16 w-16 rounded-4xl border-b-8 border-(--secondary-color-accent) text-(--background-color)',
+            'h-16 w-16 rounded-3xl border-b-8 text-(--background-color)',
         )}
         aria-hidden='true'
         style={{
           color: useButtonStyle ? 'var(--background-color)' : color,
           backgroundColor: useButtonStyle ? color : undefined,
+          borderColor: buttonBorderColor,
           zIndex: -10,
           transform: 'translate(-50%, -50%)', // Center the character on the position
           animationDelay: `${delay}s`,
